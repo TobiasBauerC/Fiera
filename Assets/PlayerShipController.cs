@@ -33,7 +33,7 @@ public class PlayerShipController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rotationDirection = Input.GetAxisRaw("Horizontal") * -1.0f;
+        rotationDirection = -Input.GetAxisRaw("Horizontal");
         isThrusting = Input.GetButton("Thrust");
         isReverseThrusting = Input.GetButton("ReverseThrust");
     }
@@ -49,10 +49,7 @@ public class PlayerShipController : MonoBehaviour
         //float speedPercentage = savedVelocity / maxLinearVelocity;
         //float modedRatationSpeed = Mathf.Lerp(0.0f, rotationSpeed, speedPercentage);
         //rb.SetRotation(rb.rotation + rotationDirection * rotationSpeed * Time.fixedDeltaTime);
-        if (rotationDirection != 0.0f)
-            rb.AddTorque(rb.rotation + rotationSpeed * rotationDirection, ForceMode2D.Force);
-        else
-            rb.SetRotation(rb.rotation);
+        rb.AddTorque(rotationSpeed * rotationDirection, ForceMode2D.Force);
     }
 
     void MoveShip()
