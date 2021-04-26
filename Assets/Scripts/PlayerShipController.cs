@@ -13,6 +13,10 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private float maxLandingVelocity = 2.0f;
     [SerializeField] private Transform[] landingGears;
     [SerializeField] private LayerMask landingMask;
+    [Header("Camera")]
+    [SerializeField] private float _minCameraSize = 5.0f;
+    [SerializeField] private float _maxCameraSize = 25.0f;
+
 
     private float rotationDirection;
     private bool isThrusting = false;
@@ -31,6 +35,14 @@ public class PlayerShipController : MonoBehaviour
     public float SavedVelocity
     {
         get { return savedVelocity; }
+    }
+    public float minCameraSize
+    {
+        get { return _minCameraSize; }
+    }
+    public float maxCameraSize
+    {
+        get { return _maxCameraSize; }
     }
 
     // Update is called once per frame

@@ -389,7 +389,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6927564036032534416, guid: 0f5a63bf758d96c4e919afef4bf758fe, type: 3}
       propertyPath: rotationSpeed
-      value: 500
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 6927564036032534416, guid: 0f5a63bf758d96c4e919afef4bf758fe, type: 3}
+      propertyPath: maxLinearVelocity
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6927564036032534417, guid: 0f5a63bf758d96c4e919afef4bf758fe, type: 3}
       propertyPath: m_Name
@@ -812,8 +816,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 879143060}
   cameraMoveSpeed: 10
-  minCameraSize: 10
-  maxCameraSize: 50
   zoomSpeed: 1
 --- !u!1 &942369343
 GameObject:
@@ -1683,6 +1685,8 @@ MonoBehaviour:
   landingMask:
     serializedVersion: 2
     m_Bits: 8
+  _minCameraSize: 15
+  _maxCameraSize: 30
 --- !u!60 &1629399798
 PolygonCollider2D:
   m_ObjectHideFlags: 0
