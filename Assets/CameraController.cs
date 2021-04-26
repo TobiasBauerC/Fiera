@@ -5,18 +5,23 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform objectToFollow;
-    public PlayerShipController player;
-    public Camera camera;
-
-    public float minCameraSize = 5.0f;
-    public float maxCameraSize = 25.0f;
-    public float zoomSpeed = 10.0f;
+    [SerializeField] private  Transform objectToFollow;
+    [SerializeField] private  PlayerShipController player;
+    [SerializeField] private  Camera camera;
+    [Space] 
+    [SerializeField] private float cameraMoveSpeed = 10.0f;
+    [Space]
+    [SerializeField] private  float minCameraSize = 5.0f;
+    [SerializeField] private  float maxCameraSize = 25.0f;
+    [SerializeField] private  float zoomSpeed = 10.0f;
 
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
-        transform.position = new Vector3(objectToFollow.position.x, objectToFollow.position.y, transform.position.z);
+        Vector3 targetPosition = new Vector3(objectToFollow.position.x, objectToFollow.position.y, transform.position.z);
+        float distToTargetPos = Vector3.Distance(transform.position, targetPosition);
+        if(distToTargetPos > 0.01f)
+            transform.position = Vector3.Lerp(transform.position, targetPosition, cameraMoveSpeed * Time.deltaTime);
 
         float lerpDist = player.SavedVelocity / player.MaxLinearVelocity;
         float targetCameraSize = Mathf.Lerp(minCameraSize, maxCameraSize, lerpDist);

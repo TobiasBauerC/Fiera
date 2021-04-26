@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class PlayerShipController : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float accelerationForce = 50.0f;
     [SerializeField] private float maxLinearVelocity = 100.0f;
     [SerializeField] private float rotationSpeed = 50.0f;
     [SerializeField] private Rigidbody2D rb;
+    [Header("Landing")]
+    [SerializeField] private float maxLandingVelocity = 2.0f;
+    [SerializeField] private Transform[] landingGears;
+    [SerializeField] private LayerMask landingMask;
 
     private float rotationDirection;
     private bool isThrusting = false;
@@ -35,32 +40,57 @@ public class PlayerShipController : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.SetRotation(rb.rotation + rotationDirection * rotationSpeed * Time.fixedDeltaTime);
+        MoveShip();
+        RotateShip();
+    }
 
+    void RotateShip()
+    {
+        //float speedPercentage = savedVelocity / maxLinearVelocity;
+        //float modedRatationSpeed = Mathf.Lerp(0.0f, rotationSpeed, speedPercentage);
+        //rb.SetRotation(rb.rotation + rotationDirection * rotationSpeed * Time.fixedDeltaTime);
+        rb.AddTorque(rb.rotation + rotationSpeed * rotationDirection, ForceMode2D.Force);
+    }
+
+    void MoveShip()
+    {
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxLinearVelocity);
         savedVelocity = rb.velocity.magnitude;
+        //rb.velocity = transform.up * rb.velocity.magnitude;
         if (isReverseThrusting)
         {
             rb.AddForce(rb.velocity * -1.0f * accelerationForce);
         }
-        else if (isThrusting)
+        if (isThrusting)
         {
             rb.AddForce(transform.up * accelerationForce);
-            //rb.velocity = transform.up * rb.velocity.magnitude;
         }
+    }
+
+    void CheckLanding()
+    {
+        if(savedVelocity > maxLandingVelocity)
+            FailedLanding(1);
+
+        foreach (Transform landingGear in landingGears)
+        {
+            RaycastHit2D hit2D = Physics2D.Raycast(landingGear.position, -transform.up, 0.2f, landingMask);
+            if(!hit2D || !hit2D.collider.CompareTag("Planet"))
+                FailedLanding(2);
+        }
+    }
+
+    void FailedLanding(int reason)
+    {
+        Debug.LogWarning("Failed Landing due to " + reason);
+        transform.position = Vector3.zero;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Entry Velocity = " + rb.velocity.magnitude);
         if (collision.gameObject.CompareTag("Planet"))
         {
-            Debug.Log("Entry Velocity = " + savedVelocity);
-            if(savedVelocity < 2.0f)
-                Debug.Log("Another happy landing!");
-            else
-                Debug.Log("You landed too hard and crashed your ship!");
-            
+            CheckLanding();                
         }
     }
 }
