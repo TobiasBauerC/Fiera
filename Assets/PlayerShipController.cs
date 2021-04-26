@@ -49,7 +49,10 @@ public class PlayerShipController : MonoBehaviour
         //float speedPercentage = savedVelocity / maxLinearVelocity;
         //float modedRatationSpeed = Mathf.Lerp(0.0f, rotationSpeed, speedPercentage);
         //rb.SetRotation(rb.rotation + rotationDirection * rotationSpeed * Time.fixedDeltaTime);
-        rb.AddTorque(rb.rotation + rotationSpeed * rotationDirection, ForceMode2D.Force);
+        if (rotationDirection != 0.0f)
+            rb.AddTorque(rb.rotation + rotationSpeed * rotationDirection, ForceMode2D.Force);
+        else
+            rb.SetRotation(rb.rotation);
     }
 
     void MoveShip()
@@ -59,7 +62,7 @@ public class PlayerShipController : MonoBehaviour
         //rb.velocity = transform.up * rb.velocity.magnitude;
         if (isReverseThrusting)
         {
-            rb.AddForce(rb.velocity * -1.0f * accelerationForce);
+            rb.AddForce(-rb.velocity * accelerationForce);
         }
         if (isThrusting)
         {
