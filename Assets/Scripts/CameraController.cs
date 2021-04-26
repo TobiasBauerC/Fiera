@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private  Transform objectToFollow;
-    [SerializeField] private  PlayerShipController player;
+    //[SerializeField] private  Transform objectToFollow;
+    //[SerializeField] private  PlayerShipController player;
     [SerializeField] private  Camera camera;
     [Space] 
     [SerializeField] private float cameraMoveSpeed = 10.0f;
@@ -18,12 +18,13 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector3 targetPosition = new Vector3(objectToFollow.position.x, objectToFollow.position.y, transform.position.z);
+        PlayerShipController ship = SpaceManager.instance.activeShip;
+        Vector3 targetPosition = new Vector3(ship.transform.position.x, ship.transform.position.y, transform.position.z);
         float distToTargetPos = Vector3.Distance(transform.position, targetPosition);
         if(distToTargetPos > 0.01f)
             transform.position = Vector3.Lerp(transform.position, targetPosition, cameraMoveSpeed * Time.deltaTime);
 
-        float lerpDist = player.SavedVelocity / player.MaxLinearVelocity;
+        float lerpDist = ship.SavedVelocity / ship.MaxLinearVelocity;
         float targetCameraSize = Mathf.Lerp(minCameraSize, maxCameraSize, lerpDist);
         float distToTargetCameraSize = Mathf.Abs(camera.orthographicSize - targetCameraSize);
         if (distToTargetCameraSize > 0.01f)

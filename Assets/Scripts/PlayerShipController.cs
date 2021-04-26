@@ -8,7 +8,7 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private float accelerationForce = 50.0f;
     [SerializeField] private float maxLinearVelocity = 100.0f;
     [SerializeField] private float rotationSpeed = 50.0f;
-    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D _rb;
     [Header("Landing")]
     [SerializeField] private float maxLandingVelocity = 2.0f;
     [SerializeField] private Transform[] landingGears;
@@ -20,7 +20,10 @@ public class PlayerShipController : MonoBehaviour
 
     private float savedVelocity = 0.0f;
 
-
+    public Rigidbody2D rb
+    {
+        get { return _rb; }
+    }
     public float MaxLinearVelocity
     {
         get { return maxLinearVelocity; }
@@ -48,7 +51,7 @@ public class PlayerShipController : MonoBehaviour
     {
         //float speedPercentage = savedVelocity / maxLinearVelocity;
         //float modedRatationSpeed = Mathf.Lerp(0.0f, rotationSpeed, speedPercentage);
-        //rb.SetRotation(rb.rotation + rotationDirection * rotationSpeed * Time.fixedDeltaTime);
+        //_rb.SetRotation(_rb.rotation + rotationDirection * rotationSpeed * Time.fixedDeltaTime);
         rb.AddTorque(rotationSpeed * rotationDirection, ForceMode2D.Force);
     }
 
@@ -56,7 +59,7 @@ public class PlayerShipController : MonoBehaviour
     {
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxLinearVelocity);
         savedVelocity = rb.velocity.magnitude;
-        //rb.velocity = transform.up * rb.velocity.magnitude;
+        //_rb.velocity = transform.up * _rb.velocity.magnitude;
         if (isReverseThrusting)
         {
             rb.AddForce(-rb.velocity * accelerationForce);
@@ -92,5 +95,10 @@ public class PlayerShipController : MonoBehaviour
         {
             CheckLanding();                
         }
+    }
+
+    void OnDisable()
+    {
+        rb.velocity = Vector2.zero;
     }
 }
