@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class PlayerShipController : MonoBehaviour
@@ -106,6 +107,16 @@ public class PlayerShipController : MonoBehaviour
         if (collision.gameObject.CompareTag("Planet"))
         {
             CheckLanding();                
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        WorldItem worldItem = collider.GetComponent<WorldItem>();
+        if (worldItem != null)
+        {
+            PlayerInventory.instance.AddToInventory(worldItem.item);
+            Destroy(collider.gameObject);
         }
     }
 
