@@ -14,6 +14,8 @@ public class BaseInventory : MonoBehaviour
     public BaseInventory()
     {
         inventory = new Item[inventorySize];
+        for (int i = 0; i < inventorySize; ++i)
+            inventory[i] = new Item() {itemType = Item.ItemType.None, stackCount = 0};
     }
     
     public void AddToInventory(Item item)
@@ -41,7 +43,9 @@ public class BaseInventory : MonoBehaviour
     {
         int newCount = item.stackCount + inventItem.stackCount;;
         if (newCount < inventItem.maxStackCount)
+        {
             inventItem.stackCount = newCount;
+        }
         else
         {
             inventItem.stackCount = inventItem.maxStackCount;

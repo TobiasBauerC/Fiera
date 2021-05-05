@@ -22,8 +22,8 @@ public class Item
     {
         switch (itemType)
         {
-            case ItemType.ScrapMetal:  return 20;
-            case ItemType.Stone:       return 40;
+            case ItemType.ScrapMetal: return 999;
+            case ItemType.Stone:       return 999;
             default:                   return 1;
         }
     }
