@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerShipController : MonoBehaviour
 {
+    [SerializeField] private float takeOffMultiplier = 10.0f;
     [Header("Movement")]
     [SerializeField] private float accelerationForce = 50.0f;
     [SerializeField] private float maxLinearVelocity = 100.0f;
@@ -20,8 +21,6 @@ public class PlayerShipController : MonoBehaviour
 
 
     private float rotationDirection;
-    private bool isThrusting = false;
-    private bool isReverseThrusting = false;
 
     private float savedVelocity = 0.0f;
 
@@ -50,36 +49,33 @@ public class PlayerShipController : MonoBehaviour
     void Update()
     {
         rotationDirection = -Input.GetAxisRaw("Horizontal");
-        isThrusting = Input.GetButton("Thrust");
-        isReverseThrusting = Input.GetButton("ReverseThrust");
     }
 
     void FixedUpdate()
     {
-        MoveShip();
+        if(Input.GetButton("AddThrust"))
+            MoveShip(takeOffMultiplier);
+        else
+            MoveShip();
         RotateShip();
     }
 
     void RotateShip()
     {
-        //float speedPercentage = savedVelocity / maxLinearVelocity;
-        //float modedRatationSpeed = Mathf.Lerp(0.0f, rotationSpeed, speedPercentage);
-        //_rb.SetRotation(_rb.rotation + rotationDirection * rotationSpeed * Time.fixedDeltaTime);
         rb.AddTorque(rotationSpeed * rotationDirection, ForceMode2D.Force);
     }
 
-    void MoveShip()
+    void MoveShip(float additionalForce = 1.0f)
     {
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxLinearVelocity);
         savedVelocity = rb.velocity.magnitude;
-        //_rb.velocity = transform.up * _rb.velocity.magnitude;
-        if (isReverseThrusting)
+        if (Input.GetButton("ReverseThrust"))
         {
-            rb.AddForce(-rb.velocity * accelerationForce);
+            rb.AddForce(-rb.velocity * accelerationForce * additionalForce);
         }
-        if (isThrusting)
+        else if (Input.GetButton("Thrust"))
         {
-            rb.AddForce(transform.up * accelerationForce);
+            rb.AddForce(transform.up * accelerationForce * additionalForce);
         }
     }
 
