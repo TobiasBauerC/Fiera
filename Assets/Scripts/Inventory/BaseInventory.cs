@@ -24,7 +24,7 @@ public class BaseInventory : MonoBehaviour
         for (int i = 0; i < inventorySize; ++i)
         {
             Item inventItem = inventory[i];
-            if(inventItem != null && inventItem.itemType == item.itemType && inventItem.stackCount < inventItem.maxStackCount) // item has a slot in inventory and is not full
+            if(inventItem != null && inventItem.itemType == item.itemType && inventItem.stackCount < ItemDatabase.GetMaxStack(inventItem.itemType)) // item has a slot in inventory and is not full
             {
                 UpdateInventorySlot(item, inventItem); // update that inventory slot
                 return;
@@ -42,14 +42,14 @@ public class BaseInventory : MonoBehaviour
     void UpdateInventorySlot(Item item, Item inventItem)
     {
         int newCount = item.stackCount + inventItem.stackCount;;
-        if (newCount < inventItem.maxStackCount)
+        if (newCount < ItemDatabase.GetMaxStack(inventItem.itemType))
         {
             inventItem.stackCount = newCount;
         }
         else
         {
-            inventItem.stackCount = inventItem.maxStackCount;
-            AddToInventory(new Item { itemType = item.itemType, stackCount = (newCount - inventItem.maxStackCount) });
+            inventItem.stackCount = ItemDatabase.GetMaxStack(inventItem.itemType);
+            AddToInventory(new Item { itemType = item.itemType, stackCount = (newCount - ItemDatabase.GetMaxStack(inventItem.itemType)) });
         }
     }
 }
