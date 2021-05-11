@@ -8,7 +8,7 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private float takeOffMultiplier = 10.0f;
     [Header("Movement")]
     [SerializeField] private float accelerationForce = 50.0f;
-    [SerializeField] private float maxLinearVelocity = 100.0f;
+    [SerializeField] private float _maxLinearVelocity = 100.0f;
     [SerializeField] private float rotationSpeed = 50.0f;
     [SerializeField] private Rigidbody2D _rb;
     [Header("Landing")]
@@ -19,22 +19,32 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private float _minCameraSize = 5.0f;
     [SerializeField] private float _maxCameraSize = 25.0f;
 
+    [Header("Ship Stats")] 
+    [SerializeField] private float maxHealth = 100.0f;
+    [SerializeField] private float _maxFuel = 100.0f;
+    [SerializeField] private float fuelLossPerSecond = 1.0f;
+    [SerializeField] private float fuelLossRotationDivider = 2.0f;
+
 
     private float rotationDirection;
 
-    private float savedVelocity = 0.0f;
+    private float _savedVelocity = 0.0f;
+
+
+    private float _currentFuel;
+    private float currentHealth;
 
     public Rigidbody2D rb
     {
         get { return _rb; }
     }
-    public float MaxLinearVelocity
+    public float maxLinearVelocity
     {
-        get { return maxLinearVelocity; }
+        get { return _maxLinearVelocity; }
     }
-    public float SavedVelocity
+    public float savedVelocity
     {
-        get { return savedVelocity; }
+        get { return _savedVelocity; }
     }
     public float minCameraSize
     {
@@ -44,16 +54,39 @@ public class PlayerShipController : MonoBehaviour
     {
         get { return _maxCameraSize; }
     }
+    public float maxFuel
+    {
+        get { return _maxFuel; }
+    }
+    public float currentFuel
+    {
+        get { return _currentFuel; }
+    }
+
+
+    void Start()
+    {
+        _currentFuel = _maxFuel;
+        currentHealth = maxHealth;
+
+        EventManager.Broadcast(EVENT.FuelChanged);
+    }
 
     // Update is called once per frame
     void Update()
     {
+        if(_currentFuel <= 0.0f || currentHealth <= 0.0f)
+            return;
+
         rotationDirection = -Input.GetAxisRaw("Horizontal");
     }
 
     void FixedUpdate()
     {
-        if(Input.GetButton("AddThrust"))
+        if (_currentFuel <= 0.0f || currentHealth <= 0.0f)
+            return;
+
+        if (Input.GetButton("AddThrust"))
             MoveShip(takeOffMultiplier);
         else
             MoveShip();
@@ -63,25 +96,35 @@ public class PlayerShipController : MonoBehaviour
     void RotateShip()
     {
         rb.AddTorque(rotationSpeed * rotationDirection, ForceMode2D.Force);
+        float fuelLost = -(fuelLossPerSecond / fuelLossRotationDivider * Mathf.Abs(rotationDirection) * Time.fixedDeltaTime);
+        UpdateFuel(fuelLost);
     }
 
     void MoveShip(float additionalForce = 1.0f)
     {
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxLinearVelocity);
-        savedVelocity = rb.velocity.magnitude;
+        rb.velocity = Vector2.ClampMagnitude(rb.velocity, _maxLinearVelocity);
+        _savedVelocity = rb.velocity.magnitude;
         if (Input.GetButton("ReverseThrust"))
         {
             rb.AddForce(-rb.velocity * accelerationForce * additionalForce);
+            UpdateFuel(-(fuelLossPerSecond * additionalForce * Time.fixedDeltaTime));
         }
         else if (Input.GetButton("Thrust"))
         {
             rb.AddForce(transform.up * accelerationForce * additionalForce);
+            UpdateFuel(-(fuelLossPerSecond * additionalForce * Time.fixedDeltaTime));
         }
+    }
+
+    void UpdateFuel(float deltaFuel)
+    {
+        _currentFuel += deltaFuel;
+        EventManager.Broadcast(EVENT.FuelChanged);
     }
 
     void CheckLanding()
     {
-        if(savedVelocity > maxLandingVelocity)
+        if(_savedVelocity > maxLandingVelocity)
             FailedLanding(1);
 
         foreach (Transform landingGear in landingGears)

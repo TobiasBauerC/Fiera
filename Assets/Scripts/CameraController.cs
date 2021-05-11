@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    //[SerializeField] private  Transform objectToFollow;
-    //[SerializeField] private  PlayerShipController player;
+    [SerializeField] private SpaceManager spaceManager;
     [SerializeField] private  Camera camera;
     [Space] 
     [SerializeField] private float cameraMoveSpeed = 10.0f;
@@ -16,7 +15,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        PlayerShipController ship = SpaceManager.instance.activeShip;
+        PlayerShipController ship = spaceManager.activeShip;
         
         MoveCamera(ship.transform);
         SetCameraZoom(ship);
@@ -32,7 +31,8 @@ public class CameraController : MonoBehaviour
 
     void SetCameraZoom(PlayerShipController ship)
     {
-        float lerpDist = ship.SavedVelocity / ship.MaxLinearVelocity;
+        float lerpDist = ship.savedVelocity / ship.maxLinearVelocity;
+        Debug.Log(ship.savedVelocity);
         float targetCameraSize = Mathf.Lerp(ship.minCameraSize, ship.maxCameraSize, lerpDist);
         float distToTargetCameraSize = Mathf.Abs(camera.orthographicSize - targetCameraSize);
         if (distToTargetCameraSize > 0.01f)

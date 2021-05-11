@@ -4,25 +4,11 @@ using UnityEngine;
 
 public class SpaceManager : MonoBehaviour
 {
-    static private SpaceManager _instance;
-    static public SpaceManager instance
-    {
-        get { return _instance; }
-    }
-
     [SerializeField] private PlayerShipController[] playerShips;
     [SerializeField] private PlayerShipController _activeShip;
     public PlayerShipController activeShip
     {
         get { return _activeShip; }
-    }
-
-    void Awake()
-    {
-        if (!_instance)
-            _instance = this;
-        else if(_instance != this)
-            Destroy(this);
     }
 
     void Start()

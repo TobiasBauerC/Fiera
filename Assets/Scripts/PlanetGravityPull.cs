@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class PlanetGravityPull : MonoBehaviour
 {
+    [SerializeField] private SpaceManager spaceManager;
     [SerializeField] private Rigidbody2D rb;
 
     [SerializeField] private float maxDistToPull = 500.0f;
 
     void FixedUpdate()
     {
-        Rigidbody2D playerRB = SpaceManager.instance.activeShip.rb;
+        Rigidbody2D playerRB = spaceManager.activeShip.rb;
 
         Vector2 direction = rb.position - playerRB.position;
         float distance = direction.magnitude;
