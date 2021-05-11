@@ -52,4 +52,14 @@ public class BaseInventory : MonoBehaviour
             AddToInventory(new Item { itemType = item.itemType, stackCount = (newCount - ItemDatabase.GetMaxStack(inventItem.itemType)) });
         }
     }
+
+    public Item GetItemAtIndex(int index)
+    {
+        return inventory[index].itemType == Item.ItemType.None ? null : inventory[index];
+    }
+
+    public void ClearInventoryAtIndex(int index)
+    {
+        inventory[index].ClearItem();
+    }
 }

@@ -25,6 +25,9 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private float fuelLossPerSecond = 1.0f;
     [SerializeField] private float fuelLossRotationDivider = 2.0f;
 
+    [Header("Other Refs")] 
+    [SerializeField] private PlayerInventory playerInventory;
+
 
     private float rotationDirection;
 
@@ -79,6 +82,17 @@ public class PlayerShipController : MonoBehaviour
             return;
 
         rotationDirection = -Input.GetAxisRaw("Horizontal");
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Item item = playerInventory.GetItemAtIndex(0);
+            if (item != null)
+            {
+                float newFuel = item.stackCount * ItemDatabase.GetFuelValue(item.itemType);
+                UpdateFuel(newFuel);
+                playerInventory.ClearInventoryAtIndex(0);
+            }
+        }
     }
 
     void FixedUpdate()
@@ -118,7 +132,7 @@ public class PlayerShipController : MonoBehaviour
 
     void UpdateFuel(float deltaFuel)
     {
-        _currentFuel += deltaFuel;
+        _currentFuel = Mathf.Clamp(_currentFuel + deltaFuel, 0.0f, maxFuel);
         EventManager.Broadcast(EVENT.FuelChanged);
     }
 
@@ -154,7 +168,7 @@ public class PlayerShipController : MonoBehaviour
         WorldItem worldItem = collider.GetComponent<WorldItem>();
         if (worldItem != null)
         {
-            PlayerInventory.instance.AddToInventory(worldItem.item);
+            playerInventory.AddToInventory(worldItem.item);
             Destroy(collider.gameObject);
         }
     }

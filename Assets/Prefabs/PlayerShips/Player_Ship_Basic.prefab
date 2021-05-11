@@ -125,6 +125,8 @@ MonoBehaviour:
   maxHealth: 100
   _maxFuel: 100
   fuelLossPerSecond: 1
+  fuelLossRotationDivider: 2
+  playerInventory: {fileID: 0}
 --- !u!212 &6927564036032534418
 SpriteRenderer:
   m_ObjectHideFlags: 0
