@@ -32,7 +32,6 @@ public class CameraController : MonoBehaviour
     void SetCameraZoom(PlayerShipController ship)
     {
         float lerpDist = ship.savedVelocity / ship.maxLinearVelocity;
-        Debug.Log(ship.savedVelocity);
         float targetCameraSize = Mathf.Lerp(ship.minCameraSize, ship.maxCameraSize, lerpDist);
         float distToTargetCameraSize = Mathf.Abs(camera.orthographicSize - targetCameraSize);
         if (distToTargetCameraSize > 0.01f)

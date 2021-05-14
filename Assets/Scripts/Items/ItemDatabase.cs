@@ -31,4 +31,9 @@ public class ItemDatabase : MonoBehaviour
     {
         return GetItemSO(itemType).creditValue;
     }
+
+    public static Sprite GetSprite(Item.ItemType itemType)
+    {
+        return GetItemSO(itemType).sprite;
+    }
 }

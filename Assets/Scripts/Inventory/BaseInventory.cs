@@ -7,9 +7,9 @@ using UnityEngine;
 
 public class BaseInventory : MonoBehaviour
 {
-    private Item[] inventory;
+    protected Item[] inventory;
 
-    [SerializeField] private int inventorySize = 10;
+    [SerializeField] protected int inventorySize = 10;
 
     public BaseInventory()
     {
@@ -29,7 +29,7 @@ public class BaseInventory : MonoBehaviour
                 UpdateInventorySlot(item, inventItem); // update that inventory slot
                 return;
             }
-            else if (firstNullIndex == -1 && inventItem.itemType == Item.ItemType.None)
+            if (firstNullIndex == -1 && inventItem.itemType == Item.ItemType.None)
                 firstNullIndex = i;
         }
         if (firstNullIndex != -1) // item is not in the inventory and there is an empty slot
@@ -51,6 +51,8 @@ public class BaseInventory : MonoBehaviour
             inventItem.stackCount = ItemDatabase.GetMaxStack(inventItem.itemType);
             AddToInventory(new Item { itemType = item.itemType, stackCount = (newCount - ItemDatabase.GetMaxStack(inventItem.itemType)) });
         }
+
+        EventManager.Broadcast(EVENT.InventoryUpdated);
     }
 
     public Item GetItemAtIndex(int index)
@@ -61,5 +63,6 @@ public class BaseInventory : MonoBehaviour
     public void ClearInventoryAtIndex(int index)
     {
         inventory[index].ClearItem();
+        EventManager.Broadcast(EVENT.InventoryUpdated);
     }
 }

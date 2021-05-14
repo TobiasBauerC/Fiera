@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 587d70cad41513f49b586401e48fc5b0, type: 3}
   m_Name: ScrapMetal
   m_EditorClassIdentifier: 
-  itemType: 1
-  maxStackCount: 999
-  fuelValue: 1
-  creditValue: 1
+  _itemType: 1
+  _maxStackCount: 999
+  _fuelValue: 1
+  _creditValue: 1
+  _sprite: {fileID: 21300000, guid: d1c1523651c71449cb32c2c7933acf8c, type: 3}
