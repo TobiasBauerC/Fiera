@@ -16,6 +16,8 @@ public class Item
     {
         None = 0, // default
         ScrapMetal,
-        Stone
+        Stone,
+        Coal
     }
+
 }
