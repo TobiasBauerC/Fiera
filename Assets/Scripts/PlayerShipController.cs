@@ -29,8 +29,13 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private PlayerInventory playerInventory;
 
 
-    private float rotationDirection;
+    private bool isThrusting = false;
+    private bool isReverseThrusting = false;
+    private bool isAddingThrust = false;
 
+    private FieraShipControls fieraShipControls;
+    
+    private float rotationDirection;
     private float _savedVelocity = 0.0f;
 
 
@@ -66,6 +71,25 @@ public class PlayerShipController : MonoBehaviour
         get { return _currentFuel; }
     }
 
+    #region InputSetup
+
+    void Awake()
+    {
+        fieraShipControls = new FieraShipControls();
+    }
+
+    void OnEnable()
+    {
+        fieraShipControls.Enable();
+    }
+
+    void OnDisable()
+    {
+        rb.velocity = Vector2.zero;
+        fieraShipControls.Disable();
+    }
+
+    #endregion
 
     void Start()
     {
@@ -73,26 +97,22 @@ public class PlayerShipController : MonoBehaviour
         currentHealth = maxHealth;
 
         EventManager.Broadcast(EVENT.FuelChanged);
-    }
 
-    // Update is called once per frame
+        fieraShipControls.SpaceShip.Thrust.started += _ => { isThrusting = true; };
+        fieraShipControls.SpaceShip.Thrust.canceled += _ => { isThrusting = false; };
+        fieraShipControls.SpaceShip.ReverseThrust.started += _ => { isReverseThrusting = true; };
+        fieraShipControls.SpaceShip.ReverseThrust.canceled += _ => { isReverseThrusting = false; };
+        fieraShipControls.SpaceShip.AddThrust.started += _ => { isAddingThrust = true; };
+        fieraShipControls.SpaceShip.AddThrust.canceled += _ => { isAddingThrust = false; };
+    }
+    
     void Update()
     {
         if(_currentFuel <= 0.0f || currentHealth <= 0.0f)
             return;
 
-        rotationDirection = -Input.GetAxisRaw("Horizontal");
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Item item = playerInventory.GetItemAtIndex(0);
-            if (item != null)
-            {
-                float newFuel = item.stackCount * ItemDatabase.GetFuelValue(item.itemType);
-                UpdateFuel(newFuel);
-                playerInventory.ClearInventoryAtIndex(0);
-            }
-        }
+        //rotationDirection = -Input.GetAxisRaw("Horizontal");
+        rotationDirection = -fieraShipControls.SpaceShip.Rotation.ReadValue<float>();
     }
 
     void FixedUpdate()
@@ -100,7 +120,7 @@ public class PlayerShipController : MonoBehaviour
         if (_currentFuel <= 0.0f || currentHealth <= 0.0f)
             return;
 
-        if (Input.GetButton("AddThrust"))
+        if (isAddingThrust)
             MoveShip(takeOffMultiplier);
         else
             MoveShip();
@@ -118,12 +138,12 @@ public class PlayerShipController : MonoBehaviour
     {
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, _maxLinearVelocity);
         _savedVelocity = rb.velocity.magnitude;
-        if (Input.GetButton("ReverseThrust"))
+        if (isReverseThrusting)
         {
             rb.AddForce(-rb.velocity * accelerationForce * additionalForce);
             UpdateFuel(-(fuelLossPerSecond * additionalForce * Time.fixedDeltaTime));
         }
-        else if (Input.GetButton("Thrust"))
+        else if (isThrusting)
         {
             rb.AddForce(transform.up * accelerationForce * additionalForce);
             UpdateFuel(-(fuelLossPerSecond * additionalForce * Time.fixedDeltaTime));
@@ -171,10 +191,5 @@ public class PlayerShipController : MonoBehaviour
             playerInventory.AddToInventory(worldItem.item);
             Destroy(collider.gameObject);
         }
-    }
-
-    void OnDisable()
-    {
-        rb.velocity = Vector2.zero;
     }
 }
