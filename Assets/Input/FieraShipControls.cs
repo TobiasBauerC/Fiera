@@ -49,6 +49,14 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Hold""
+                },
+                {
+                    ""name"": ""ActivateInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""bafbfcac-836f-4ccd-ad80-893f32e86a67"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -183,6 +191,115 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
                     ""action"": ""AddThrust"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9401ee22-1880-405a-8fb6-4da6e7b471c4"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ActivateInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""InventoryUI"",
+            ""id"": ""9a2fd44e-f492-4ab6-9de1-153eb307b7a1"",
+            ""actions"": [
+                {
+                    ""name"": ""LeftRight"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""6063a49f-7893-4825-93fa-949c380efede"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""AddFuel"",
+                    ""type"": ""Button"",
+                    ""id"": ""37ce9fd8-d8c1-43c5-ad28-6e036140e4d0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""LeaveInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""2e1ad4bc-659b-48db-ab3c-d03e0102838f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""fde30b07-05cd-4952-9f49-b680b9240359"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftRight"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""df41e36f-a6d0-4e74-9e98-45af2c06cefa"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""ff11afb3-8a6a-43fc-8571-9382822bc51f"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7049aa4e-581f-4bdf-8002-6818fe814bc8"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AddFuel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""51a22b94-7467-46d1-baa1-dcab83574653"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeaveInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c25bca43-9bc9-4dd3-817e-4f4882a2da53"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeaveInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -195,6 +312,12 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
         m_SpaceShip_ReverseThrust = m_SpaceShip.FindAction("ReverseThrust", throwIfNotFound: true);
         m_SpaceShip_Rotation = m_SpaceShip.FindAction("Rotation", throwIfNotFound: true);
         m_SpaceShip_AddThrust = m_SpaceShip.FindAction("AddThrust", throwIfNotFound: true);
+        m_SpaceShip_ActivateInventory = m_SpaceShip.FindAction("ActivateInventory", throwIfNotFound: true);
+        // InventoryUI
+        m_InventoryUI = asset.FindActionMap("InventoryUI", throwIfNotFound: true);
+        m_InventoryUI_LeftRight = m_InventoryUI.FindAction("LeftRight", throwIfNotFound: true);
+        m_InventoryUI_AddFuel = m_InventoryUI.FindAction("AddFuel", throwIfNotFound: true);
+        m_InventoryUI_LeaveInventory = m_InventoryUI.FindAction("LeaveInventory", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -248,6 +371,7 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
     private readonly InputAction m_SpaceShip_ReverseThrust;
     private readonly InputAction m_SpaceShip_Rotation;
     private readonly InputAction m_SpaceShip_AddThrust;
+    private readonly InputAction m_SpaceShip_ActivateInventory;
     public struct SpaceShipActions
     {
         private @FieraShipControls m_Wrapper;
@@ -256,6 +380,7 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
         public InputAction @ReverseThrust => m_Wrapper.m_SpaceShip_ReverseThrust;
         public InputAction @Rotation => m_Wrapper.m_SpaceShip_Rotation;
         public InputAction @AddThrust => m_Wrapper.m_SpaceShip_AddThrust;
+        public InputAction @ActivateInventory => m_Wrapper.m_SpaceShip_ActivateInventory;
         public InputActionMap Get() { return m_Wrapper.m_SpaceShip; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -277,6 +402,9 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
                 @AddThrust.started -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnAddThrust;
                 @AddThrust.performed -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnAddThrust;
                 @AddThrust.canceled -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnAddThrust;
+                @ActivateInventory.started -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnActivateInventory;
+                @ActivateInventory.performed -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnActivateInventory;
+                @ActivateInventory.canceled -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnActivateInventory;
             }
             m_Wrapper.m_SpaceShipActionsCallbackInterface = instance;
             if (instance != null)
@@ -293,15 +421,74 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
                 @AddThrust.started += instance.OnAddThrust;
                 @AddThrust.performed += instance.OnAddThrust;
                 @AddThrust.canceled += instance.OnAddThrust;
+                @ActivateInventory.started += instance.OnActivateInventory;
+                @ActivateInventory.performed += instance.OnActivateInventory;
+                @ActivateInventory.canceled += instance.OnActivateInventory;
             }
         }
     }
     public SpaceShipActions @SpaceShip => new SpaceShipActions(this);
+
+    // InventoryUI
+    private readonly InputActionMap m_InventoryUI;
+    private IInventoryUIActions m_InventoryUIActionsCallbackInterface;
+    private readonly InputAction m_InventoryUI_LeftRight;
+    private readonly InputAction m_InventoryUI_AddFuel;
+    private readonly InputAction m_InventoryUI_LeaveInventory;
+    public struct InventoryUIActions
+    {
+        private @FieraShipControls m_Wrapper;
+        public InventoryUIActions(@FieraShipControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @LeftRight => m_Wrapper.m_InventoryUI_LeftRight;
+        public InputAction @AddFuel => m_Wrapper.m_InventoryUI_AddFuel;
+        public InputAction @LeaveInventory => m_Wrapper.m_InventoryUI_LeaveInventory;
+        public InputActionMap Get() { return m_Wrapper.m_InventoryUI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InventoryUIActions set) { return set.Get(); }
+        public void SetCallbacks(IInventoryUIActions instance)
+        {
+            if (m_Wrapper.m_InventoryUIActionsCallbackInterface != null)
+            {
+                @LeftRight.started -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeftRight;
+                @LeftRight.performed -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeftRight;
+                @LeftRight.canceled -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeftRight;
+                @AddFuel.started -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnAddFuel;
+                @AddFuel.performed -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnAddFuel;
+                @AddFuel.canceled -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnAddFuel;
+                @LeaveInventory.started -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeaveInventory;
+                @LeaveInventory.performed -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeaveInventory;
+                @LeaveInventory.canceled -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeaveInventory;
+            }
+            m_Wrapper.m_InventoryUIActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @LeftRight.started += instance.OnLeftRight;
+                @LeftRight.performed += instance.OnLeftRight;
+                @LeftRight.canceled += instance.OnLeftRight;
+                @AddFuel.started += instance.OnAddFuel;
+                @AddFuel.performed += instance.OnAddFuel;
+                @AddFuel.canceled += instance.OnAddFuel;
+                @LeaveInventory.started += instance.OnLeaveInventory;
+                @LeaveInventory.performed += instance.OnLeaveInventory;
+                @LeaveInventory.canceled += instance.OnLeaveInventory;
+            }
+        }
+    }
+    public InventoryUIActions @InventoryUI => new InventoryUIActions(this);
     public interface ISpaceShipActions
     {
         void OnThrust(InputAction.CallbackContext context);
         void OnReverseThrust(InputAction.CallbackContext context);
         void OnRotation(InputAction.CallbackContext context);
         void OnAddThrust(InputAction.CallbackContext context);
+        void OnActivateInventory(InputAction.CallbackContext context);
+    }
+    public interface IInventoryUIActions
+    {
+        void OnLeftRight(InputAction.CallbackContext context);
+        void OnAddFuel(InputAction.CallbackContext context);
+        void OnLeaveInventory(InputAction.CallbackContext context);
     }
 }

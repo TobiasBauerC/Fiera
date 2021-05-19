@@ -17,6 +17,11 @@ public class BaseInventory : MonoBehaviour
         for (int i = 0; i < inventorySize; ++i)
             inventory[i] = new Item() {itemType = Item.ItemType.None, stackCount = 0};
     }
+
+    protected void Init()
+    {
+        EventManager.AddHandler(EVENT.FuelChanged, UpdateItemImages);
+    }
     
     public void AddToInventory(Item item)
     {
@@ -86,6 +91,22 @@ public class BaseInventory : MonoBehaviour
     {
         inventory[index].ClearItem();
         UpdateItemImages();
+    }
+
+    protected int GetFirstItemIndex()
+    {
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            if(inventory[i].itemType != Item.ItemType.None && inventory[i].stackCount > 0)
+                return i;
+        }
+
+        return -1;
+    }
+
+    protected Vector3 GetItemImagePosition(int index)
+    {
+        return itemImages[index].transform.position;
     }
 
     void OnEnable()
