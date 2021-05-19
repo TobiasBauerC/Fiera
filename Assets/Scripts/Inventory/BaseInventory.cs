@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using UnityEditor;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BaseInventory : MonoBehaviour
 {
     protected Item[] inventory;
 
     [SerializeField] protected int inventorySize = 10;
+    [SerializeField] private Image[] itemImages;
 
     public BaseInventory()
     {
@@ -52,7 +52,29 @@ public class BaseInventory : MonoBehaviour
             AddToInventory(new Item { itemType = item.itemType, stackCount = (newCount - ItemDatabase.GetMaxStack(inventItem.itemType)) });
         }
 
-        EventManager.Broadcast(EVENT.InventoryUpdated);
+        UpdateItemImages();
+    }
+
+    void UpdateItemImages()
+    {
+        for (int i = 0; i < itemImages.Length; ++i)
+        {
+            Image image = itemImages[i];
+            Item item = inventory[i];
+            TextMeshProUGUI tmp = image.GetComponentInChildren<TextMeshProUGUI>();
+            if (item.itemType == Item.ItemType.None || item.stackCount <= 0)
+            {
+                image.enabled = false;
+                tmp.text = string.Empty;
+                image.sprite = null;
+            }
+            else
+            {
+                image.sprite = ItemDatabase.GetSprite(inventory[i].itemType);
+                image.enabled = true;
+                tmp.text = item.stackCount.ToString();
+            }
+        }
     }
 
     public Item GetItemAtIndex(int index)
@@ -63,6 +85,11 @@ public class BaseInventory : MonoBehaviour
     public void ClearInventoryAtIndex(int index)
     {
         inventory[index].ClearItem();
-        EventManager.Broadcast(EVENT.InventoryUpdated);
+        UpdateItemImages();
+    }
+
+    void OnEnable()
+    {
+        UpdateItemImages();
     }
 }

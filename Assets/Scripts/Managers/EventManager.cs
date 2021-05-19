@@ -19,6 +19,5 @@ public static class EventManager
 
 public enum EVENT
 {
-    FuelChanged,
-    InventoryUpdated
+    FuelChanged
 }
