@@ -15,30 +15,32 @@ public class PlayerInventory : BaseInventory
         Init();
     }
 
-    protected void Init()
+    protected override void Init()
     {
         base.Init();
 
         selectedItemMarker.gameObject.SetActive(false);
-        playerShipController.fieraShipInput.SpaceShip.ActivateInventory.performed += _ => SetMarkerLocation();
+        playerShipController.fieraShipInput.SpaceShip.ActivateInventory.performed += _ => OnEnableInventory();
         playerShipController.fieraShipInput.InventoryUI.LeaveInventory.performed += _ => OnDisableInventory();
         playerShipController.fieraShipInput.InventoryUI.AddFuel.performed += _ => AddFuelToPlayerShip();
+        playerShipController.fieraShipInput.InventoryUI.SelectionLeft.performed += _ => UpdateSelection(-1);
+        playerShipController.fieraShipInput.InventoryUI.SelectionRight.performed += _ => UpdateSelection(1);
     }
 
     void SetMarkerLocation()
     {
         Vector3 position = Vector3.zero;
-        int firstItemIndex = GetFirstItemIndex();
-        if (firstItemIndex < 0)
-        {
-            currentlySelectedIndex = -1;
-            selectedItemMarker.gameObject.SetActive(false);
-            return;
-        }
-
-        currentlySelectedIndex = firstItemIndex;
-        selectedItemMarker.transform.position = GetItemImagePosition(firstItemIndex);
+        //int firstItemIndex = GetFirstItemIndex();
+        int itemPos = currentlySelectedIndex >= 0 ? currentlySelectedIndex : 0;
+        
+        selectedItemMarker.transform.position = GetItemImagePosition(itemPos);
         selectedItemMarker.gameObject.SetActive(true);
+    }
+
+    void UpdateSelection(int deltaIndex)
+    {
+        currentlySelectedIndex = ChangeSelection(currentlySelectedIndex, deltaIndex);
+        SetMarkerLocation();
     }
 
     void AddFuelToPlayerShip()
@@ -51,7 +53,7 @@ public class PlayerInventory : BaseInventory
         if (inventory[currentlySelectedIndex].stackCount <= 0)
         {
             ClearInventoryAtIndex(currentlySelectedIndex);
-            SetMarkerLocation();
+            UpdateSelection(1);
         }
         playerShipController.UpdateFuel(fuelToAdd);
     }
@@ -59,5 +61,11 @@ public class PlayerInventory : BaseInventory
     void OnDisableInventory()
     {
         selectedItemMarker.gameObject.SetActive(false);
+    }
+
+    void OnEnableInventory()
+    {
+        currentlySelectedIndex = GetFirstItemIndex();
+        SetMarkerLocation();
     }
 }

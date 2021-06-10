@@ -210,14 +210,6 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
             ""id"": ""9a2fd44e-f492-4ab6-9de1-153eb307b7a1"",
             ""actions"": [
                 {
-                    ""name"": ""LeftRight"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""6063a49f-7893-4825-93fa-949c380efede"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""AddFuel"",
                     ""type"": ""Button"",
                     ""id"": ""37ce9fd8-d8c1-43c5-ad28-6e036140e4d0"",
@@ -232,42 +224,25 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""SelectionLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""f339c910-9b13-4d30-8bd9-79fe3484c450"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""SelectionRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""8581dde6-9ed1-46cb-b702-f29b73f3fb5e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": ""1D Axis"",
-                    ""id"": ""fde30b07-05cd-4952-9f49-b680b9240359"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LeftRight"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""df41e36f-a6d0-4e74-9e98-45af2c06cefa"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LeftRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""ff11afb3-8a6a-43fc-8571-9382822bc51f"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LeftRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
                 {
                     ""name"": """",
                     ""id"": ""7049aa4e-581f-4bdf-8002-6818fe814bc8"",
@@ -300,6 +275,28 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
                     ""action"": ""LeaveInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""65de4684-2625-487c-b089-ae8d07934777"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectionLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fdae93c2-40cd-460f-9d8b-a9b7871df995"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectionRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -315,9 +312,10 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
         m_SpaceShip_ActivateInventory = m_SpaceShip.FindAction("ActivateInventory", throwIfNotFound: true);
         // InventoryUI
         m_InventoryUI = asset.FindActionMap("InventoryUI", throwIfNotFound: true);
-        m_InventoryUI_LeftRight = m_InventoryUI.FindAction("LeftRight", throwIfNotFound: true);
         m_InventoryUI_AddFuel = m_InventoryUI.FindAction("AddFuel", throwIfNotFound: true);
         m_InventoryUI_LeaveInventory = m_InventoryUI.FindAction("LeaveInventory", throwIfNotFound: true);
+        m_InventoryUI_SelectionLeft = m_InventoryUI.FindAction("SelectionLeft", throwIfNotFound: true);
+        m_InventoryUI_SelectionRight = m_InventoryUI.FindAction("SelectionRight", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -432,16 +430,18 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
     // InventoryUI
     private readonly InputActionMap m_InventoryUI;
     private IInventoryUIActions m_InventoryUIActionsCallbackInterface;
-    private readonly InputAction m_InventoryUI_LeftRight;
     private readonly InputAction m_InventoryUI_AddFuel;
     private readonly InputAction m_InventoryUI_LeaveInventory;
+    private readonly InputAction m_InventoryUI_SelectionLeft;
+    private readonly InputAction m_InventoryUI_SelectionRight;
     public struct InventoryUIActions
     {
         private @FieraShipControls m_Wrapper;
         public InventoryUIActions(@FieraShipControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @LeftRight => m_Wrapper.m_InventoryUI_LeftRight;
         public InputAction @AddFuel => m_Wrapper.m_InventoryUI_AddFuel;
         public InputAction @LeaveInventory => m_Wrapper.m_InventoryUI_LeaveInventory;
+        public InputAction @SelectionLeft => m_Wrapper.m_InventoryUI_SelectionLeft;
+        public InputAction @SelectionRight => m_Wrapper.m_InventoryUI_SelectionRight;
         public InputActionMap Get() { return m_Wrapper.m_InventoryUI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -451,28 +451,34 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_InventoryUIActionsCallbackInterface != null)
             {
-                @LeftRight.started -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeftRight;
-                @LeftRight.performed -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeftRight;
-                @LeftRight.canceled -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeftRight;
                 @AddFuel.started -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnAddFuel;
                 @AddFuel.performed -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnAddFuel;
                 @AddFuel.canceled -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnAddFuel;
                 @LeaveInventory.started -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeaveInventory;
                 @LeaveInventory.performed -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeaveInventory;
                 @LeaveInventory.canceled -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnLeaveInventory;
+                @SelectionLeft.started -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnSelectionLeft;
+                @SelectionLeft.performed -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnSelectionLeft;
+                @SelectionLeft.canceled -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnSelectionLeft;
+                @SelectionRight.started -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnSelectionRight;
+                @SelectionRight.performed -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnSelectionRight;
+                @SelectionRight.canceled -= m_Wrapper.m_InventoryUIActionsCallbackInterface.OnSelectionRight;
             }
             m_Wrapper.m_InventoryUIActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @LeftRight.started += instance.OnLeftRight;
-                @LeftRight.performed += instance.OnLeftRight;
-                @LeftRight.canceled += instance.OnLeftRight;
                 @AddFuel.started += instance.OnAddFuel;
                 @AddFuel.performed += instance.OnAddFuel;
                 @AddFuel.canceled += instance.OnAddFuel;
                 @LeaveInventory.started += instance.OnLeaveInventory;
                 @LeaveInventory.performed += instance.OnLeaveInventory;
                 @LeaveInventory.canceled += instance.OnLeaveInventory;
+                @SelectionLeft.started += instance.OnSelectionLeft;
+                @SelectionLeft.performed += instance.OnSelectionLeft;
+                @SelectionLeft.canceled += instance.OnSelectionLeft;
+                @SelectionRight.started += instance.OnSelectionRight;
+                @SelectionRight.performed += instance.OnSelectionRight;
+                @SelectionRight.canceled += instance.OnSelectionRight;
             }
         }
     }
@@ -487,8 +493,9 @@ public class @FieraShipControls : IInputActionCollection, IDisposable
     }
     public interface IInventoryUIActions
     {
-        void OnLeftRight(InputAction.CallbackContext context);
         void OnAddFuel(InputAction.CallbackContext context);
         void OnLeaveInventory(InputAction.CallbackContext context);
+        void OnSelectionLeft(InputAction.CallbackContext context);
+        void OnSelectionRight(InputAction.CallbackContext context);
     }
 }

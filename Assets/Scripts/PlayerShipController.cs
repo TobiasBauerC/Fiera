@@ -112,6 +112,8 @@ public class PlayerShipController : MonoBehaviour
         fieraShipInput.SpaceShip.AddThrust.canceled += _ => { isAddingThrust = false; };
         fieraShipInput.SpaceShip.ActivateInventory.performed += _ => EnableInventory();
         fieraShipInput.InventoryUI.LeaveInventory.performed += _ => DisableInventory();
+
+        DisableInventory();
     }
     
     void Update()

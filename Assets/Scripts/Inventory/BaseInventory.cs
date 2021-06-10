@@ -18,14 +18,14 @@ public class BaseInventory : MonoBehaviour
             inventory[i] = new Item() {itemType = Item.ItemType.None, stackCount = 0};
     }
 
-    protected void Init()
+    protected virtual void Init()
     {
         EventManager.AddHandler(EVENT.FuelChanged, UpdateItemImages);
     }
     
     public void AddToInventory(Item item)
     {
-        int firstNullIndex = -1;
+        int firstNullIndex = -1; // Track position of first empty inventory slot
         for (int i = 0; i < inventorySize; ++i)
         {
             Item inventItem = inventory[i];
@@ -107,6 +107,32 @@ public class BaseInventory : MonoBehaviour
     protected Vector3 GetItemImagePosition(int index)
     {
         return itemImages[index].transform.position;
+    }
+
+    protected int ChangeSelection(int currentIndex, int deltaIndex)
+    {
+        // If there is nothing in the inventory, don't return an index
+        if (GetFirstItemIndex() == -1)
+            return -1;
+
+        int attempts = 0;
+        int newIndex = currentIndex;
+        int clampedDeltaIndex = Mathf.Clamp(deltaIndex, -1, 1);
+
+        while (attempts < inventory.Length)
+        {
+            newIndex += clampedDeltaIndex;
+            if (newIndex < 0)
+                newIndex = inventory.Length - 1;
+            if (newIndex >= inventory.Length)
+                newIndex = 0;
+
+            if (inventory[newIndex].itemType != Item.ItemType.None && inventory[newIndex].stackCount > 0)
+                break;
+            attempts++;
+        }
+
+        return newIndex;
     }
 
     void OnEnable()
