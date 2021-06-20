@@ -108,20 +108,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e811fb15ee4031c4eb04c55bd97ec97a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debug_infiniteFuel: 1
   takeOffMultiplier: 1.7
   accelerationForce: 150
-  _maxLinearVelocity: 20
+  _maxLinearVelocity: 100
   rotationSpeed: 250
   _rb: {fileID: 6927564036032534419}
-  maxLandingVelocity: 2
+  maxLandingVelocity: 3
   landingGears:
   - {fileID: 6927564035335288065}
   - {fileID: 6927564035812271749}
   landingMask:
     serializedVersion: 2
     m_Bits: 8
-  _minCameraSize: 3
-  _maxCameraSize: 12
+  _minCameraSize: 10
+  _maxCameraSize: 30
   maxHealth: 100
   _maxFuel: 100
   fuelLossPerSecond: 1

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerShipController : MonoBehaviour
 {
+    [SerializeField] private bool debug_infiniteFuel = false;
     [SerializeField] private float takeOffMultiplier = 10.0f;
     [Header("Movement")]
     [SerializeField] private float accelerationForce = 50.0f;
@@ -151,12 +152,18 @@ public class PlayerShipController : MonoBehaviour
         if (isReverseThrusting)
         {
             rb.AddForce(-rb.velocity * accelerationForce * additionalForce);
-            UpdateFuel(-(fuelLossPerSecond * additionalForce * Time.fixedDeltaTime));
+#if UNITY_EDITOR
+            if(!debug_infiniteFuel)
+#endif
+                UpdateFuel(-(fuelLossPerSecond * additionalForce * Time.fixedDeltaTime));
         }
         else if (isThrusting)
         {
             rb.AddForce(transform.up * accelerationForce * additionalForce);
-            UpdateFuel(-(fuelLossPerSecond * additionalForce * Time.fixedDeltaTime));
+#if UNITY_EDITOR
+            if (!debug_infiniteFuel)
+#endif
+                UpdateFuel(-(fuelLossPerSecond * additionalForce * Time.fixedDeltaTime));
         }
     }
 
@@ -166,17 +173,30 @@ public class PlayerShipController : MonoBehaviour
         EventManager.Broadcast(EVENT.FuelChanged);
     }
 
-    void CheckLanding()
+    void CheckLanding(GameObject planet)
     {
-        if(_savedVelocity > maxLandingVelocity)
+        Orbit planetOrbit = planet.GetComponent<Orbit>();
+        float landingVelocityDifference = Mathf.Abs(_savedVelocity - planetOrbit.Speed);
+        Debug.Log(landingVelocityDifference);
+        if (landingVelocityDifference > maxLandingVelocity)
+        {
             FailedLanding(1);
+            return;
+        }
 
         foreach (Transform landingGear in landingGears)
         {
             RaycastHit2D hit2D = Physics2D.Raycast(landingGear.position, -transform.up, 0.2f, landingMask);
-            if(!hit2D || !hit2D.collider.CompareTag("Planet"))
+            if (!hit2D || !hit2D.collider.CompareTag("Planet"))
+            {
                 FailedLanding(2);
+                return;
+            }
         }
+
+        // Getting here means landing was good
+        _rb.isKinematic = true;
+        transform.parent = planet.transform;
     }
 
     void FailedLanding(int reason)
@@ -204,7 +224,7 @@ public class PlayerShipController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Planet"))
         {
-            CheckLanding();                
+            CheckLanding(collision.gameObject);                
         }
     }
 
